@@ -56,8 +56,13 @@ async def run_bot_async():
         logger.info(f"@{me.username} Started Successfully!")
         print(f"@{me.username} Started Successfully!")
         
-        # Keep the bot running with idle
-        await idle()
+        # Keep the bot running with custom idle implementation
+        # This avoids signal handlers which only work in main thread
+        while bot_running:
+            try:
+                await asyncio.sleep(1)  # Sleep for 1 second
+            except asyncio.CancelledError:
+                break
         
     except (ApiIdInvalid, ApiIdPublishedFlood) as e:
         logger.error(f"API Error: {e}")
