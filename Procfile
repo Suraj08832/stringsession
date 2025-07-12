@@ -1,1 +1,1 @@
-web: python3 app_simple.py
+worker: python3 bot_only.py
