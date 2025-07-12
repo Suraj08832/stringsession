@@ -32,7 +32,7 @@ def run_bot():
         # Use hardcoded credentials for Render
         API_ID = 28053244
         API_HASH = "a7d745be7c8ba465750bfad1e7abc075"
-        BOT_TOKEN = "7744856670:AAFfDgBdA7b60ceI_OQpmsjQHTN0K9x6zLE"
+        BOT_TOKEN = "7744856670:AAFJt9j0SnB4nD0nZkInYXGb6njSBfLWuWs"
         
         logger.info(f"Using API_ID: {API_ID}")
         logger.info(f"Using API_HASH: {API_HASH[:10]}...")

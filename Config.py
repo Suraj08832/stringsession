@@ -20,7 +20,7 @@ else:
     # Fill the Values
     API_ID = 28053244
     API_HASH = "a7d745be7c8ba465750bfad1e7abc075"
-    BOT_TOKEN = "7744856670:AAFfDgBdA7b60ceI_OQpmsjQHTN0K9x6zLE"
+    BOT_TOKEN = "7744856670:AAFJt9j0SnB4nD0nZkInYXGb6njSBfLWuWs"
     DATABASE_URL = "postgresql://aanya_user:M1SOmN58Ap2ibLInFqJwomjtBYK5IjB6@dpg-d1h4s17gi27c73c9vgi0-a.oregon-postgres.render.com/aanya"
     if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
