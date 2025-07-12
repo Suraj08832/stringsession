@@ -3,6 +3,7 @@ import logging
 import threading
 import time
 import requests
+import asyncio
 from flask import Flask, jsonify
 from pyromod import listen
 from pyrogram import Client, idle
@@ -23,8 +24,8 @@ bot_running = False
 bot_client = None
 bot_thread = None
 
-def run_bot():
-    """Function to run the Telegram bot"""
+async def run_bot_async():
+    """Async function to run the Telegram bot"""
     global bot_running, bot_client
     try:
         logger.info("Starting Telegram bot...")
@@ -47,16 +48,16 @@ def run_bot():
         print("Bot client initialized, starting...")
         
         # Start the bot
-        bot_client.start()
+        await bot_client.start()
         bot_running = True
         
         # Get bot info
-        me = bot_client.get_me()
+        me = await bot_client.get_me()
         logger.info(f"@{me.username} Started Successfully!")
         print(f"@{me.username} Started Successfully!")
         
         # Keep the bot running with idle
-        idle()
+        await idle()
         
     except (ApiIdInvalid, ApiIdPublishedFlood) as e:
         logger.error(f"API Error: {e}")
@@ -76,11 +77,23 @@ def run_bot():
     finally:
         if bot_client:
             try:
-                bot_client.stop()
+                await bot_client.stop()
             except:
                 pass
         logger.info("Bot stopped.")
         print("Bot stopped. Alvida!")
+
+def run_bot():
+    """Function to run the Telegram bot with proper event loop setup"""
+    # Create and set event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # Run the async bot function
+        loop.run_until_complete(run_bot_async())
+    finally:
+        loop.close()
 
 def autoping():
     """Function to ping the app to keep it alive"""
