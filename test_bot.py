@@ -106,7 +106,6 @@ def test_bot():
                 plugins=dict(root="StringSessionBot"),
                 # Add time sync settings
                 sleep_threshold=30,
-                max_concurrent_transmissions=1,
             )
             
             logger.info("Bot client initialized, starting...")
