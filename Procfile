@@ -1,1 +1,1 @@
-worker: python3 generator.py
+web: python3 app.py

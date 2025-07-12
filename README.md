@@ -49,5 +49,5 @@ Telegram Bot to generate Pyrogram and Telethon String Session.
 - `MUST_JOIN` - Username/ID of your telegram channel/group.
 
 ## Support and Update
-- [`Support` ](https://t.me/OkaeriUserbot)
-- [`Update` ](https://t.me/nbzoning)
+- [`Support` ](https://t.me/bots_update_all)
+- [`Update` ](https://t.me/bots_update_all)
