@@ -61,7 +61,7 @@ async def generate_session(bot, msg, telethon=False):
     if telethon:
         client = TelegramClient(StringSession(), api_id, api_hash)
     else:
-        client = Client(":memory:", api_id, api_hash)
+        client = Client(f"session_{user_id}", api_id, api_hash)
     await client.connect()
     try:
         if telethon:
@@ -123,7 +123,7 @@ async def generate_session(bot, msg, telethon=False):
 async def cancelled(msg):
     if "/cancel" in msg.text:
         await msg.reply("Cancel Process!❌", quote=True, reply_markup=InlineKeyboardMarkup(Data.generate_button))
-        return true
+        return True
     elif "/restart" in msg.text:
         await msg.reply("Restart Bot!", quote=True, reply_markup=InlineKeyboardMarkup(Data.generate_button))
         return True
