@@ -5,7 +5,7 @@ import time
 import requests
 from flask import Flask, jsonify
 from pyromod import listen
-from pyrogram import Client, idle
+from pyrogram import Client, idle, filters
 from pyrogram.errors import ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvalid
 
 # Configure logging
@@ -38,6 +38,9 @@ def run_bot():
         logger.info(f"Using API_HASH: {API_HASH[:10]}...")
         logger.info(f"Using BOT_TOKEN: {BOT_TOKEN[:20]}...")
         
+        logger.info("Initializing Pyrogram client...")
+        print("Initializing Pyrogram client...")
+        
         # Initialize Pyrogram client with time sync
         bot_client = Client(
             "render_bot_session_new",
@@ -48,17 +51,32 @@ def run_bot():
             sleep_threshold=30,
         )
         
+        # Add a simple test handler
+        @bot_client.on_message(filters.command("test"))
+        async def test_handler(client, message):
+            await message.reply("Bot is working! 🎉")
+            logger.info(f"Test message received from {message.from_user.id}")
+            print(f"Test message received from {message.from_user.id}")
+        
         logger.info("Bot client initialized, starting...")
         print("Bot client initialized, starting...")
         
         # Start the bot
+        logger.info("Calling bot_client.start()...")
+        print("Calling bot_client.start()...")
         bot_client.start()
+        
+        logger.info("Bot started successfully, getting bot info...")
+        print("Bot started successfully, getting bot info...")
         bot_running = True
         
         # Get bot info
         me = bot_client.get_me()
         logger.info(f"@{me.username} Started Successfully!")
         print(f"@{me.username} Started Successfully!")
+        
+        logger.info("Starting idle loop...")
+        print("Starting idle loop...")
         
         # Keep the bot running with idle
         idle()
@@ -71,9 +89,16 @@ def run_bot():
         logger.error(f"Token Error: {e}")
         print("Your BOT_TOKEN is not valid.")
         bot_running = False
+    except ImportError as e:
+        logger.error(f"Import Error: {e}")
+        print(f"Import Error: {e}")
+        bot_running = False
     except Exception as e:
         logger.error(f"Bot error: {e}")
         print(f"Bot error: {e}")
+        import traceback
+        logger.error(f"Full traceback: {traceback.format_exc()}")
+        print(f"Full traceback: {traceback.format_exc()}")
         bot_running = False
     finally:
         if bot_client:
