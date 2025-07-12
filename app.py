@@ -21,16 +21,18 @@ app = Flask(__name__)
 # Global variable to track bot status
 bot_running = False
 bot_client = None
+bot_thread = None
 
 def run_bot():
     """Function to run the Telegram bot"""
     global bot_running, bot_client
     try:
         logger.info("Starting Telegram bot...")
+        print("Starting Telegram bot...")
         
-        # Initialize Pyrogram client
+        # Initialize Pyrogram client with a unique session name
         bot_client = Client(
-            ":memory:",
+            "render_bot_session",
             api_id=Config.API_ID,
             api_hash=Config.API_HASH,
             bot_token=Config.BOT_TOKEN,
@@ -38,6 +40,7 @@ def run_bot():
         )
         
         logger.info("Bot client initialized, starting...")
+        print("Bot client initialized, starting...")
         bot_client.start()
         bot_running = True
         
@@ -46,8 +49,9 @@ def run_bot():
         logger.info(f"@{me.username} Started Successfully!")
         print(f"@{me.username} Started Successfully!")
         
-        # Keep the bot running
-        idle()
+        # Keep the bot running without blocking
+        while bot_running:
+            time.sleep(1)
         
     except (ApiIdInvalid, ApiIdPublishedFlood) as e:
         logger.error(f"API Error: {e}")
@@ -63,7 +67,10 @@ def run_bot():
         bot_running = False
     finally:
         if bot_client:
-            bot_client.stop()
+            try:
+                bot_client.stop()
+            except:
+                pass
         logger.info("Bot stopped.")
         print("Bot stopped. Alvida!")
 
@@ -107,13 +114,23 @@ def status():
 @app.route('/start-bot')
 def start_bot():
     """Manual endpoint to start the bot"""
-    global bot_running
+    global bot_running, bot_thread
     if not bot_running:
         bot_thread = threading.Thread(target=run_bot, daemon=True)
         bot_thread.start()
         return jsonify({"message": "Bot starting...", "status": "starting"})
     else:
         return jsonify({"message": "Bot is already running", "status": "running"})
+
+@app.route('/stop-bot')
+def stop_bot():
+    """Manual endpoint to stop the bot"""
+    global bot_running
+    if bot_running:
+        bot_running = False
+        return jsonify({"message": "Bot stopping...", "status": "stopping"})
+    else:
+        return jsonify({"message": "Bot is not running", "status": "stopped"})
 
 if __name__ == "__main__":
     logger.info("Starting Flask app with bot...")
