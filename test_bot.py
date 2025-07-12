@@ -10,6 +10,16 @@ from pyrogram import Client, idle
 from pyrogram.errors import ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvalid
 from flask import Flask, jsonify
 
+# Add compatibility for missing imghdr module (removed in Python 3.13)
+try:
+    import imghdr
+except ImportError:
+    # Create a dummy imghdr module for compatibility
+    class DummyImghdr:
+        def what(self, *args, **kwargs):
+            return None
+    imghdr = DummyImghdr()
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -87,15 +97,19 @@ def test_bot():
             logger.info(f"API_HASH: {Config.API_HASH[:10]}...")
             logger.info(f"BOT_TOKEN: {Config.BOT_TOKEN[:20]}...")
             
-            # Clean up old session file if it exists
-            session_file = "test_session_new.session"
-            if os.path.exists(session_file):
-                try:
-                    os.remove(session_file)
-                    logger.info("Removed old session file")
-                    print("Removed old session file")
-                except Exception as e:
-                    logger.warning(f"Could not remove old session file: {e}")
+            # Clean up old session files if they exist
+            session_files = ["test_session_new.session", "test_session_new.session-journal"]
+            for session_file in session_files:
+                if os.path.exists(session_file):
+                    try:
+                        os.remove(session_file)
+                        logger.info(f"Removed old session file: {session_file}")
+                        print(f"Removed old session file: {session_file}")
+                    except Exception as e:
+                        logger.warning(f"Could not remove old session file {session_file}: {e}")
+            
+            # Wait a moment for file system to sync
+            time.sleep(1)
             
             # Initialize Pyrogram client with a unique session name
             bot_client = Client(
@@ -139,15 +153,16 @@ def test_bot():
             if "msg_id too low" in str(e) or "time has to be synchronized" in str(e):
                 logger.info("Time sync error detected. Cleaning up session...")
                 print("Time sync error detected. Cleaning up session...")
-                # Clean up session file
-                session_file = "test_session_new.session"
-                if os.path.exists(session_file):
-                    try:
-                        os.remove(session_file)
-                        logger.info("Removed corrupted session file")
-                        print("Removed corrupted session file")
-                    except:
-                        pass
+                # Clean up session files
+                session_files = ["test_session_new.session", "test_session_new.session-journal"]
+                for session_file in session_files:
+                    if os.path.exists(session_file):
+                        try:
+                            os.remove(session_file)
+                            logger.info(f"Removed corrupted session file: {session_file}")
+                            print(f"Removed corrupted session file: {session_file}")
+                        except:
+                            pass
                 retry_count += 1
                 if retry_count < max_retries:
                     logger.info(f"Retrying in 5 seconds... (Attempt {retry_count + 1}/{max_retries})")
