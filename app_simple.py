@@ -46,7 +46,6 @@ def run_bot():
             bot_token=BOT_TOKEN,
             plugins=dict(root="StringSessionBot"),
             sleep_threshold=30,
-            max_concurrent_transmissions=1,
         )
         
         logger.info("Bot client initialized, starting...")
