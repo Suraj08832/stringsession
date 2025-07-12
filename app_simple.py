@@ -1,5 +1,4 @@
 import os
-import Config
 import logging
 import threading
 import time
@@ -50,6 +49,8 @@ def run_bot():
         
         logger.info("Bot client initialized, starting...")
         print("Bot client initialized, starting...")
+        
+        # Start the bot
         bot_client.start()
         bot_running = True
         
@@ -58,9 +59,8 @@ def run_bot():
         logger.info(f"@{me.username} Started Successfully!")
         print(f"@{me.username} Started Successfully!")
         
-        # Keep the bot running without blocking
-        while bot_running:
-            time.sleep(1)
+        # Keep the bot running with idle
+        idle()
         
     except (ApiIdInvalid, ApiIdPublishedFlood) as e:
         logger.error(f"API Error: {e}")
