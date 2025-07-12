@@ -40,7 +40,7 @@ def run_bot():
         
         # Initialize Pyrogram client with a unique session name
         bot_client = Client(
-            "render_bot_session",
+            "render_bot_session_new",
             api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
