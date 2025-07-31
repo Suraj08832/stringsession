@@ -13,7 +13,7 @@ if ENVIRONMENT:
     if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)  # Sqlalchemy dropped support for "postgres" name.
     # https://stackoverflow.com/questions/62688256/sqlalchemy-exc-nosuchmoduleerror-cant-load-plugin-sqlalchemy-dialectspostgre
-    MUST_JOIN = os.environ.get('MUST_JOIN', None)
+    MUST_JOIN = os.environ.get('MUST_JOIN', bots_update_all)
     if MUST_JOIN and MUST_JOIN.startswith("@"):
         MUST_JOIN = MUST_JOIN.replace("@", "")
 else:
